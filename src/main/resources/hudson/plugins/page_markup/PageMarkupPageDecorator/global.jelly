@@ -1,10 +1,10 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
   <f:section title="Additional Page HTML Markup">
-    <f:entry title="Header HTML"  help="/plugin/page-markup/headerHtmlFragment.html">
-      <f:textarea field="headerHtmlFragment"/>
+    <f:entry title="Header HTML" help="/plugin/page-markup/headerHtmlFragment.html" field="headerHtmlFragment">
+      <f:textarea name="htmlHeader"/>
     </f:entry>
-    <f:entry title="Footer HTML"  help="/plugin/page-markup/footerHtmlFragment.html">
-      <f:textarea field="footerHtmlFragment"/>
+    <f:entry title="Footer HTML" help="/plugin/page-markup/footerHtmlFragment.html" field="footerHtmlFragment">
+      <f:textarea name="htmlFooter"/>
     </f:entry>
   </f:section>
 </j:jelly>

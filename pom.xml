@@ -10,7 +10,7 @@
   <artifactId>page-markup</artifactId>
   <packaging>hpi</packaging>
   <name>Hudson Page Markup Plug-in</name>
-  <version>0.2</version>
+  <version>0.2-SNAPSHOT</version>
   <url>https://software.sandia.gov/trac/fast/wiki/PageMarkup</url>
   
   <licenses>

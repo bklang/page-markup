@@ -19,52 +19,79 @@ package hudson.plugins.page_markup;
 
 import net.sf.json.JSONObject;
 
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
+import hudson.Extension;
 import hudson.Util;
 import hudson.model.PageDecorator;
+import hudson.model.Descriptor;
 
+class PageMarkupHelper {
+   private static int count = 0;
+   private static int size = 2;
+   private static PageMarkupPageDecorator[] instances = new PageMarkupPageDecorator[size];
+
+   public static void add(PageMarkupPageDecorator pd) {
+      if ( size == count ) {
+	 size *= 2;
+	 PageMarkupPageDecorator[] tmp = new PageMarkupPageDecorator[size];
+	 for(int i = 0; i < count; i++)
+	    tmp[i] = instances[i];
+	 instances = tmp;
+      }
+      instances[count] = pd;
+      count++;
+   }
+
+   public static void reload() {
+      for( int i=0; i < PageMarkupHelper.count; PageMarkupHelper.instances[i++].load() );
+   }
+
+   public static int getCount() {
+      return count;
+   }
+}
+
+@Extension
 public class PageMarkupPageDecorator extends PageDecorator {
 
     private String headerHtmlFragment;
     private String footerHtmlFragment;
 
+    @DataBoundConstructor
     public PageMarkupPageDecorator(String headerHtmlFragment, String footerHtmlFragment) {
         this();
         this.headerHtmlFragment = headerHtmlFragment;
         this.footerHtmlFragment = footerHtmlFragment;
     }
     
-    protected PageMarkupPageDecorator() {
+    public PageMarkupPageDecorator() {
         super(PageMarkupPageDecorator.class);
         load();
+	PageMarkupHelper.add(this);
     }
 
     @Override
     public String getDisplayName() {
         return "Additional Page HTML Markup";
     }
-
+   
     @Override
-    public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-        req.bindJSON(this, json);
+    public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
+	headerHtmlFragment = formData.getString("htmlHeader");
+	footerHtmlFragment = formData.getString("htmlFooter");
+	//  + Integer.toString(PageMarkupHelper.getCount());
         save();
+	PageMarkupHelper.reload();
         return true;
     }
-
+   
     public String getheaderHtmlFragment() {
         return Util.fixEmpty(headerHtmlFragment);
     }
 
-    public void setheaderHtmlFragment(String htmlFragment) {
-        this.headerHtmlFragment = htmlFragment;
-    }
-
     public String getfooterHtmlFragment() {
         return Util.fixEmpty(footerHtmlFragment);
-    }
-
-    public void setfooterHtmlFragment(String htmlFragment) {
-        this.footerHtmlFragment = htmlFragment;
     }
 }
